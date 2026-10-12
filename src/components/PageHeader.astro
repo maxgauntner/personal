@@ -1,0 +1,40 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead?: string;
+}
+const { eyebrow, title, lead } = Astro.props;
+---
+
+<header class="ph">
+  <div class="bg-grid"></div>
+  <div class="container inner">
+    <span class="eyebrow">{eyebrow}</span>
+    <h1 class="text-gradient">{title}</h1>
+    {lead && <p class="lead">{lead}</p>}
+    <slot />
+  </div>
+</header>
+
+<style>
+  .ph {
+    position: relative;
+    padding-block: clamp(64px, 10vw, 112px) clamp(40px, 6vw, 64px);
+    overflow: hidden;
+  }
+  .inner {
+    position: relative;
+    display: grid;
+    gap: 18px;
+  }
+  h1 {
+    font-size: clamp(36px, 5.5vw, 60px);
+    letter-spacing: -0.045em;
+    line-height: 1.05;
+    max-width: 820px;
+  }
+  .lead {
+    max-width: 640px;
+  }
+</style>

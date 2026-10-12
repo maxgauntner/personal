@@ -1,0 +1,69 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate, readingTime } from '../utils';
+interface Props {
+  article: CollectionEntry<'articles'>;
+}
+const { article } = Astro.props;
+---
+
+<a href={`/articles/${article.id}`} class="row">
+  <time class="mono" datetime={article.data.date.toISOString()}>{formatDate(article.data.date)}</time>
+  <div class="text">
+    <h3>{article.data.title}</h3>
+    <p class="muted">{article.data.description}</p>
+  </div>
+  <span class="rt mono">{readingTime(article.body)} <span class="arrow">→</span></span>
+</a>
+
+<style>
+  .row {
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
+    gap: 24px;
+    align-items: baseline;
+    padding-block: 28px;
+    border-top: 1px solid var(--border);
+    transition: background 0.2s var(--ease);
+  }
+  .row:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+  time,
+  .rt {
+    font-size: 12px;
+    color: var(--fg-subtle);
+    white-space: nowrap;
+  }
+  .text {
+    display: grid;
+    gap: 6px;
+  }
+  h3 {
+    font-size: 19px;
+    letter-spacing: -0.02em;
+    transition: color 0.2s var(--ease);
+  }
+  p {
+    font-size: 15px;
+  }
+  .row:hover h3 {
+    color: var(--accent);
+  }
+  .arrow {
+    display: inline-block;
+    transition: transform 0.2s var(--ease);
+  }
+  .row:hover .arrow {
+    transform: translateX(3px);
+  }
+  @media (max-width: 640px) {
+    .row {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .rt {
+      display: none;
+    }
+  }
+</style>

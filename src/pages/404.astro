@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Not found">
+  <section class="container nf">
+    <span class="eyebrow">404 · Access denied</span>
+    <h1 class="display text-gradient">Nothing to see here.</h1>
+    <p class="lead">This page doesn't exist — or it's been quarantined.</p>
+    <a href="/" class="btn btn-primary">Back home <span class="arrow">→</span></a>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    display: grid;
+    gap: 20px;
+    justify-items: start;
+    padding-block: clamp(96px, 16vw, 200px);
+  }
+</style>

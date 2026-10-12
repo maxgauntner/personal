@@ -1,0 +1,27 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { getProjects } from '../../utils';
+
+const projects = await getProjects();
+---
+
+<Base title="Work" description="Case studies in complex cybersecurity product design.">
+  <PageHeader
+    eyebrow="Work"
+    title="Case studies"
+    lead="A selection of products I've designed for security teams — from detection and identity to incident response. Some details are abstracted to respect NDAs."
+  />
+  <section class="container list">
+    {projects.map((p, i) => <div class="reveal"><ProjectCard project={p} large={i % 3 === 0} /></div>)}
+  </section>
+</Base>
+
+<style>
+  .list {
+    display: grid;
+    gap: 20px;
+    padding-bottom: clamp(72px, 10vw, 128px);
+  }
+</style>

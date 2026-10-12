@@ -1,0 +1,77 @@
+---
+import { NAV, SITE } from '../site';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container inner">
+    <div class="col">
+      <a href="/" class="name">{SITE.name}</a>
+      <p class="muted small">{SITE.role} · {SITE.location}</p>
+    </div>
+    <nav class="col links" aria-label="Footer">
+      {NAV.map((n) => <a href={n.href}>{n.label}</a>)}
+      <a href="/rss.xml">RSS</a>
+    </nav>
+    <div class="col links">
+      {SITE.socials.map((s) => <a href={s.href} rel="me noopener" target="_blank">{s.label}</a>)}
+      <a href={`mailto:${SITE.email}`}>Email</a>
+    </div>
+  </div>
+  <div class="container legal">
+    <span>© {year} {SITE.name}</span>
+    <span class="mono">Designed &amp; built with care</span>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-block: 56px 32px;
+    font-size: 14px;
+  }
+  .inner {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 32px;
+  }
+  .name {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .small {
+    margin-top: 6px;
+    font-size: 14px;
+  }
+  .links {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+  }
+  .links a {
+    color: var(--fg-muted);
+    width: fit-content;
+  }
+  .links a:hover {
+    color: var(--fg);
+  }
+  .legal {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 48px;
+    font-size: 12px;
+    color: var(--fg-subtle);
+  }
+  @media (max-width: 640px) {
+    .inner {
+      grid-template-columns: 1fr 1fr;
+    }
+    .inner .col:first-child {
+      grid-column: 1 / -1;
+    }
+    .legal {
+      flex-direction: column;
+    }
+  }
+</style>

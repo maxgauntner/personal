@@ -1,0 +1,30 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import ArticleRow from '../../components/ArticleRow.astro';
+import { getArticles } from '../../utils';
+
+const articles = await getArticles();
+---
+
+<Base title="Writing" description="Essays and notes on security UX, product design, and design systems.">
+  <PageHeader
+    eyebrow="Writing"
+    title="Notes on designing for security"
+    lead="Essays on security UX, data-dense interfaces, AI-assisted products, and the craft of B2B SaaS design."
+  >
+    <a href="/rss.xml" class="link-arrow rss">Subscribe via RSS <span class="arrow">→</span></a>
+  </PageHeader>
+  <section class="container list reveal">
+    {articles.map((a) => <ArticleRow article={a} />)}
+  </section>
+</Base>
+
+<style>
+  .rss {
+    margin-top: 4px;
+  }
+  .list {
+    padding-bottom: clamp(72px, 10vw, 128px);
+  }
+</style>

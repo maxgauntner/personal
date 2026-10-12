@@ -1,0 +1,288 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ProjectVisual from '../../components/ProjectVisual.astro';
+import { getProjects } from '../../utils';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: { project, next: projects[(i + 1) % projects.length] },
+  }));
+}
+
+const { project, next } = Astro.props;
+const { Content, headings } = await render(project);
+const d = project.data;
+const toc = headings.filter((h) => h.depth === 2);
+const meta = [
+  { k: 'Role', v: d.role },
+  { k: 'Timeline', v: d.timeline },
+  { k: 'Team', v: d.team },
+  { k: 'Platform', v: d.platform },
+];
+---
+
+<Base title={d.title} description={d.summary}>
+  <article>
+    <header class="cs-head">
+      <div class="bg-grid"></div>
+      <div class="container inner">
+        <a href="/projects" class="back link-arrow">← All work</a>
+        <div class="kicker mono">{d.company} · {d.year}</div>
+        <h1 class="text-gradient">{d.title}</h1>
+        <p class="lead">{d.summary}</p>
+        <div class="tags">{d.tags.map((t) => <span class="chip">{t}</span>)}</div>
+      </div>
+    </header>
+
+    <div class="container">
+      <ProjectVisual variant={d.visual} size="hero" />
+
+      <dl class="meta">
+        {
+          meta.map((m) => (
+            <div>
+              <dt>{m.k}</dt>
+              <dd>{m.v}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      {
+        d.outcomes.length > 0 && (
+          <div class="outcomes glass">
+            {d.outcomes.map((o) => (
+              <div class="o">
+                <span class="ov">{o.value}</span>
+                <span class="ol">{o.label}</span>
+              </div>
+            ))}
+          </div>
+        )
+      }
+
+      <div class="layout">
+        <aside class="toc" aria-label="On this page">
+          <span class="toc-title mono">On this page</span>
+          <ul>
+            {toc.map((h) => <li><a href={`#${h.slug}`} data-toc={h.slug}>{h.text}</a></li>)}
+          </ul>
+        </aside>
+        <div class="body">
+          {
+            d.nda && (
+              <p class="nda">
+                <span class="chip">NDA</span> Details, names and data have been abstracted to protect confidential information.
+              </p>
+            )
+          }
+          <div class="prose"><Content /></div>
+        </div>
+      </div>
+    </div>
+
+    {
+      next && next.id !== project.id && (
+        <nav class="container next-wrap" aria-label="Next case study">
+          <a href={`/projects/${next.id}`} class="next glass card-hover">
+            <span class="eyebrow">Next case study</span>
+            <span class="next-title">{next.data.title}</span>
+            <span class="arrow next-arrow">→</span>
+          </a>
+        </nav>
+      )
+    }
+  </article>
+</Base>
+
+<script>
+  // Highlight the current section in the TOC
+  const links = document.querySelectorAll<HTMLAnchorElement>('[data-toc]');
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          links.forEach((l) => l.classList.toggle('active', l.dataset.toc === e.target.id));
+        }
+      }
+    },
+    { rootMargin: '-20% 0px -70% 0px' },
+  );
+  document.querySelectorAll('.prose h2[id]').forEach((h) => io.observe(h));
+</script>
+
+<style>
+  .cs-head {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(48px, 8vw, 88px) 48px;
+  }
+  .inner {
+    position: relative;
+    display: grid;
+    gap: 16px;
+    max-width: 860px;
+    margin-inline: auto;
+    text-align: center;
+    justify-items: center;
+  }
+  .back {
+    margin-bottom: 16px;
+  }
+  .kicker {
+    font-size: 13px;
+    color: var(--accent);
+  }
+  h1 {
+    font-size: clamp(36px, 5.5vw, 64px);
+    letter-spacing: -0.045em;
+    line-height: 1.04;
+  }
+  .tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 8px;
+  }
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin: 40px 0 0;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .meta dt {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-subtle);
+    margin-bottom: 6px;
+  }
+  .meta dd {
+    margin: 0;
+    font-size: 15px;
+  }
+  .outcomes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    margin-top: 32px;
+    overflow: hidden;
+  }
+  .o {
+    display: grid;
+    gap: 6px;
+    padding: 28px;
+  }
+  .o + .o {
+    border-left: 1px solid var(--border);
+  }
+  .ov {
+    font-size: clamp(32px, 4vw, 44px);
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .ol {
+    font-size: 14px;
+    color: var(--fg-muted);
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 64px;
+    padding-block: 64px clamp(72px, 10vw, 112px);
+  }
+  .toc {
+    position: sticky;
+    top: calc(var(--nav-h) + 40px);
+    align-self: start;
+  }
+  .toc-title {
+    display: block;
+    font-size: 12px;
+    color: var(--fg-subtle);
+    margin-bottom: 12px;
+  }
+  .toc ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 1px solid var(--border);
+  }
+  .toc a {
+    display: block;
+    padding: 6px 0 6px 14px;
+    margin-left: -1px;
+    border-left: 1px solid transparent;
+    font-size: 14px;
+    color: var(--fg-subtle);
+    transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
+  }
+  .toc a:hover {
+    color: var(--fg);
+  }
+  .toc a:global(.active) {
+    color: var(--fg);
+    border-left-color: var(--accent);
+  }
+  .body {
+    max-width: 720px;
+  }
+  .nda {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 40px;
+    font-size: 14px;
+    color: var(--fg-subtle);
+  }
+  .next-wrap {
+    padding-bottom: clamp(72px, 10vw, 128px);
+  }
+  .next {
+    display: grid;
+    gap: 10px;
+    padding: 36px;
+    position: relative;
+  }
+  .next-title {
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    padding-right: 48px;
+  }
+  .next-arrow {
+    position: absolute;
+    right: 36px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    color: var(--fg-subtle);
+  }
+  .next:hover .next-arrow {
+    color: var(--accent);
+  }
+  @media (max-width: 900px) {
+    .layout {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .toc {
+      display: none;
+    }
+    .meta {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 640px) {
+    .o + .o {
+      border-left: 0;
+      border-top: 1px solid var(--border);
+    }
+  }
+</style>

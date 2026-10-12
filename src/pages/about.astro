@@ -1,0 +1,282 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../site';
+
+// TODO: replace with your real history
+const experience = [
+  { years: '2023 — Now', role: 'Senior Product Designer', company: 'Company Name', note: 'Leading design for detection & response. XDR, AI-assisted investigation.' },
+  { years: '2020 — 2023', role: 'Senior Product Designer', company: 'Company Name', note: 'Identity governance and access analytics. Built the design system.' },
+  { years: '2017 — 2020', role: 'Product Designer', company: 'Company Name', note: 'SOAR playbooks and incident collaboration.' },
+  { years: '2014 — 2017', role: 'UI/UX Designer', company: 'Company Name', note: 'B2B SaaS and marketing sites.' },
+];
+
+const principles = [
+  { title: 'Calm under pressure', body: 'Security tools are used on the worst day of someone’s week. Interfaces should lower the temperature, not raise it.' },
+  { title: 'Density is a feature', body: 'Experts want information, not whitespace. The craft is making density feel effortless.' },
+  { title: 'Show the why', body: 'Every automated decision and AI output should be explainable and reversible.' },
+  { title: 'Ship to learn', body: 'Real data and real analysts beat any amount of internal debate.' },
+];
+
+const toolkit = [
+  { group: 'Design', items: ['Figma', 'FigJam', 'Framer', 'Rive', 'Protopie'] },
+  { group: 'Research', items: ['Contextual inquiry', 'Tabletop exercises', 'Usability testing', 'Dovetail'] },
+  { group: 'Build', items: ['HTML / CSS', 'React', 'Design tokens', 'Storybook'] },
+  { group: 'Security', items: ['MITRE ATT&CK', 'SIEM / XDR', 'IAM', 'SOAR', 'CSPM'] },
+];
+---
+
+<Base title="About" description={`About ${SITE.name}, ${SITE.role}.`}>
+  <section class="intro">
+    <div class="bg-grid"></div>
+    <div class="container grid">
+      <div class="copy">
+        <span class="eyebrow">About</span>
+        <h1 class="text-gradient">I design the tools that defend everyone else’s.</h1>
+        <div class="prose">
+          <p>
+            I'm {SITE.name}, a {SITE.role.toLowerCase()} based in {SITE.location}. For the past decade I've worked on B2B SaaS, and most of that
+            time inside cybersecurity — designing products that help analysts detect threats, investigate incidents, and govern access across sprawling
+            environments.
+          </p>
+          <p>
+            I'm happiest in the messy middle of complex products: untangling workflows, partnering closely with engineers and data scientists, and
+            building systems that let teams ship with consistency. I care about craft at every level — from information architecture down to the 1px
+            border on a table row.
+          </p>
+          <p>Outside of work, I write about security UX, mentor early-career designers, and tinker with front-end code.</p>
+        </div>
+        <div class="ctas">
+          <a href={`mailto:${SITE.email}`} class="btn btn-primary">Get in touch <span class="arrow">→</span></a>
+          <a href="/resume.pdf" class="btn btn-ghost">Résumé</a>
+        </div>
+      </div>
+
+      <div class="portrait-col">
+        <!-- TODO: replace with <img src="/portrait.jpg" alt="..."> -->
+        <div class="portrait glass">
+          <div class="portrait-inner">
+            <span>{SITE.name.split(' ').map((n) => n[0]).join('')}</span>
+          </div>
+        </div>
+        <div class="now glass">
+          <span class="eyebrow">Currently</span>
+          <p>Designing AI-assisted investigation workflows and writing a series on security UX patterns.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow">Principles</span><h2 class="h2">What I believe about design.</h2></div></div>
+      <div class="principles">
+        {
+          principles.map((p, i) => (
+            <div class="principle glass reveal">
+              <span class="mono num">0{i + 1}</span>
+              <h3>{p.title}</h3>
+              <p class="muted">{p.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container two">
+      <div><span class="eyebrow">Experience</span><h2 class="h2">Where I've worked.</h2></div>
+      <ol class="xp">
+        {
+          experience.map((x) => (
+            <li class="reveal">
+              <span class="mono years">{x.years}</span>
+              <div>
+                <h3>
+                  {x.role} <span class="muted">· {x.company}</span>
+                </h3>
+                <p class="muted">{x.note}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container two">
+      <div><span class="eyebrow">Toolkit</span><h2 class="h2">What I work with.</h2></div>
+      <div class="tools">
+        {
+          toolkit.map((t) => (
+            <div class="reveal">
+              <h3 class="mono tg">{t.group}</h3>
+              <div class="chips">{t.items.map((i) => <span class="chip">{i}</span>)}</div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .intro {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(64px, 10vw, 112px);
+  }
+  .grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: clamp(32px, 6vw, 80px);
+    align-items: start;
+  }
+  .copy {
+    display: grid;
+    gap: 24px;
+  }
+  h1 {
+    font-size: clamp(36px, 5vw, 56px);
+    letter-spacing: -0.045em;
+    line-height: 1.05;
+  }
+  .ctas {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .portrait-col {
+    display: grid;
+    gap: 16px;
+    position: sticky;
+    top: calc(var(--nav-h) + 32px);
+  }
+  .portrait {
+    padding: 8px;
+    border-radius: 24px;
+  }
+  .portrait-inner {
+    aspect-ratio: 4 / 5;
+    border-radius: 18px;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(circle at 30% 20%, var(--accent-glow), transparent 60%),
+      var(--bg-sunken);
+    font-size: 64px;
+    font-weight: 600;
+    letter-spacing: -0.05em;
+    color: var(--fg-faint);
+  }
+  .now {
+    display: grid;
+    gap: 10px;
+    padding: 20px;
+    font-size: 14.5px;
+  }
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .principle {
+    display: grid;
+    align-content: start;
+    gap: 10px;
+    padding: 24px;
+  }
+  .num {
+    font-size: 12px;
+    color: var(--accent);
+  }
+  .principle h3 {
+    font-size: 17px;
+  }
+  .principle p {
+    font-size: 14.5px;
+  }
+  .two {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 48px;
+  }
+  .two > div:first-child {
+    display: grid;
+    gap: 14px;
+    align-content: start;
+  }
+  .xp {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .xp li {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 24px;
+    padding-block: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .xp li:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+  .years {
+    font-size: 13px;
+    color: var(--fg-subtle);
+    padding-top: 3px;
+  }
+  .xp h3 {
+    font-size: 17px;
+    letter-spacing: -0.02em;
+  }
+  .xp p {
+    font-size: 15px;
+    margin-top: 4px;
+  }
+  .tools {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .tg {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    margin-bottom: 12px;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  @media (max-width: 900px) {
+    .grid,
+    .two {
+      grid-template-columns: 1fr;
+    }
+    .portrait-col {
+      position: static;
+      max-width: 360px;
+    }
+    .principles {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .principles,
+    .tools {
+      grid-template-columns: 1fr;
+    }
+    .xp li {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+  }
+</style>
